@@ -1,10 +1,12 @@
 #include <iostream>
 
 using std::cout;
+using std::cin;
 using std::endl;
 
 int main() {
-    int year = 2025;
-    cout << "Hello, " << year << " World!" << endl;
+    int pizzas;
+    cin >> pizzas;
+    cout << pizzas << " pizzas ordered." << endl;
     return 0;
 }
