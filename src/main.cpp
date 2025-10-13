@@ -3,6 +3,12 @@
 
 using std::cout, std::endl;
 
+void draw() {
+    BeginDrawing();
+    ClearBackground(Color{20, 20, 25, 255});
+    EndDrawing();
+}
+
 int main() {
     InitWindow(1920, 1080, "Radar Contact");
     ToggleFullscreen();
@@ -10,9 +16,9 @@ int main() {
     SetExitKey(KEY_NULL);
 
     while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(Color{20, 20, 25, 255});
-        EndDrawing();
+        float deltaTime = GetFrameTime();
+
+        draw();
     }
     CloseWindow();
     return 0;
