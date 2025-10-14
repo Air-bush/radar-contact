@@ -39,9 +39,7 @@ void update(float deltaTime) {
         for (Airplane &airplane : airplanes) {
             airplane.update(deltaTime);
             airplane.previousX.push_front(airplane.positionX);
-            airplane.previousX.pop_back();
-            airplane.previousY.push_front(airplane.positionY);
-            airplane.previousY.pop_back();
+            airplane->previousY.push_front(airplane.positionY);
         }
         radarPingTimer = 0;
     }
