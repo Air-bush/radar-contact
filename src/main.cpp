@@ -1,14 +1,19 @@
 #include <iostream>
 #include "raylib.h"
-#include <list>
+#include <vector>
+#include <deque>
 #include <cmath>
 
-using std::cout, std::endl, std::list;
+using std::cout, std::endl, std::vector, std::deque;
+
+const float RADAR_PING_INTERVAL = 1.0f; // seconds
+const int RADAR_AIRCRAFT_SIZE = 4; // pixels
+
 class Airplane {
 public:
     float positionX, positionY;
     int speed, altitude, heading;
-    float previousX[5], previousY[5];
+    deque<float> previousX, previousY;
 
     Airplane(int startX, int startY, int startSpeed, int startAltitude, int startHeading) {
         positionX = startX;
@@ -26,23 +31,31 @@ public:
     }
 
     void draw() {
-        DrawCircle(positionX, positionY, 5, WHITE);
+        DrawRectangle(positionX - RADAR_AIRCRAFT_SIZE, positionY - RADAR_AIRCRAFT_SIZE, RADAR_AIRCRAFT_SIZE * 2, RADAR_AIRCRAFT_SIZE * 2, WHITE);
+        for (int i = 2; i < previousX.size(); i+=2) {
+            DrawCircle(previousX[i], previousY[i], RADAR_AIRCRAFT_SIZE / 2, WHITE);
+        }
     }
 };
 
-list<Airplane> airplanes;
+vector<Airplane> airplanes;
 float radarPingTimer = 0;
 
 void update(float deltaTime) {
     radarPingTimer += deltaTime;
-    if (radarPingTimer >= 1) {
-        for (Airplane &airplane : airplanes) {
-            airplane.update(deltaTime);
-            airplane.previousX.push_front(airplane.positionX);
-            airplane->previousY.push_front(airplane.positionY);
-        }
-        radarPingTimer = 0;
+    if (radarPingTimer < 1){
+        return;
     }
+    for (Airplane &airplane : airplanes) {
+        airplane.update(deltaTime);
+        airplane.previousX.push_front(airplane.positionX);
+        airplane.previousY.push_front(airplane.positionY);
+        if (airplane.previousX.size() > 10) {
+            airplane.previousX.pop_back();
+            airplane.previousY.pop_back();
+        }
+    }
+    radarPingTimer = 0;
 }
 
 void draw() {
@@ -60,7 +73,7 @@ int main() {
     SetTargetFPS(120);
 
     SetExitKey(KEY_NULL);
-    airplanes.push_back(Airplane(500, 500, 250, 10000, 90));
+    airplanes.push_back(Airplane(500, 500, 160, 10000, 90));
 
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
