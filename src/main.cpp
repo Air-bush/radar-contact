@@ -2,20 +2,23 @@
 #include "raylib.h"
 #include <vector>
 #include <deque>
+#include <string>
 #include <cmath>
 
-using std::cout, std::endl, std::vector, std::deque;
+using std::cout, std::endl, std::vector, std::deque, std::string;
 
 const float RADAR_PING_INTERVAL = 1.0f; // seconds
 const int RADAR_AIRCRAFT_SIZE = 4; // pixels
 
 class Airplane {
 public:
+    string callSign;
     float positionX, positionY;
     int speed, altitude, heading;
     deque<float> previousX, previousY;
 
-    Airplane(int startX, int startY, int startSpeed, int startAltitude, int startHeading) {
+    Airplane(string callSign, int startX, int startY, int startSpeed, int startAltitude, int startHeading) {
+        this->callSign = callSign;
         positionX = startX;
         positionY = startY;
         speed = startSpeed;
@@ -73,7 +76,10 @@ int main() {
     SetTargetFPS(120);
 
     SetExitKey(KEY_NULL);
-    airplanes.push_back(Airplane(500, 500, 160, 10000, 90));
+    airplanes.push_back(Airplane("EWG3616", 500, 500, 250, 10000, 90));
+    airplanes.push_back(Airplane("CSA4564", 100, 1000, 180, 10000, 20));
+    airplanes.push_back(Airplane("TVS4PE", 800, 100, 250, 10000, 240));
+    airplanes.push_back(Airplane("DLH1VV", 300, 700, 280, 10000, 120));
 
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
